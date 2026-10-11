@@ -1,0 +1,1 @@
+"""EchoMind backend application package."""

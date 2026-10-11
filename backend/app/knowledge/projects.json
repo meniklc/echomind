@@ -1,0 +1,70 @@
+{
+  "projects": [
+    {
+      "id": "phishcure",
+      "name": "PhishCure",
+      "short_summary": "PLACEHOLDER: One-sentence summary of PhishCure (phishing-related project on GitHub as Phishcure).",
+      "problem_solved": "PLACEHOLDER: What phishing / security problem this addresses.",
+      "technologies": ["PLACEHOLDER: e.g. CSS", "PLACEHOLDER: add verified stack"],
+      "contribution": "PLACEHOLDER: Your actual contribution — do not invent scope.",
+      "status": "PLACEHOLDER: completed | in-progress | archived",
+      "outcomes": [],
+      "repository_url": "https://github.com/meniklc/Phishcure",
+      "demo_url": null,
+      "tags": ["security", "ai-ml", "web"]
+    },
+    {
+      "id": "covid19-prediction",
+      "name": "COVID-19 Prediction System",
+      "short_summary": "PLACEHOLDER: One-sentence summary of the COVID-19 mini project.",
+      "problem_solved": "PLACEHOLDER: Prediction / analysis problem addressed.",
+      "technologies": ["PLACEHOLDER: Jupyter Notebook", "PLACEHOLDER: add verified ML libraries"],
+      "contribution": "PLACEHOLDER: Your actual contribution.",
+      "status": "PLACEHOLDER: completed | in-progress | archived",
+      "outcomes": [],
+      "repository_url": "https://github.com/meniklc/COVID-19_MINI_Project",
+      "demo_url": null,
+      "tags": ["ai-ml", "healthcare", "data-science"]
+    },
+    {
+      "id": "bbms",
+      "name": "BBMS",
+      "short_summary": "PLACEHOLDER: Blood Bank / BBMS project summary. Related public repo may be HemoCloud — confirm before publishing details.",
+      "problem_solved": "PLACEHOLDER: Problem this system solves.",
+      "technologies": ["PLACEHOLDER: e.g. PHP if HemoCloud-related"],
+      "contribution": "PLACEHOLDER: Your actual contribution.",
+      "status": "PLACEHOLDER: completed | in-progress | archived",
+      "outcomes": [],
+      "repository_url": "https://github.com/meniklc/HemoCloud",
+      "demo_url": null,
+      "tags": ["web", "fullstack"],
+      "notes": "Repository URL points to public HemoCloud repo. Confirm BBMS ↔ HemoCloud relationship and update if incorrect."
+    },
+    {
+      "id": "cognix",
+      "name": "CogniX",
+      "short_summary": "PLACEHOLDER: CogniX was named as a portfolio candidate but no matching public GitHub repository was found under meniklc. Add verified details.",
+      "problem_solved": "PLACEHOLDER",
+      "technologies": [],
+      "contribution": "PLACEHOLDER",
+      "status": "unverified",
+      "outcomes": [],
+      "repository_url": null,
+      "demo_url": null,
+      "tags": ["ai-ml"]
+    },
+    {
+      "id": "nexusops-ai",
+      "name": "NexusOps AI",
+      "short_summary": "A permission-aware enterprise AI assistant featuring RAG, tool calling, role-based access control, policy enforcement, and human-in-the-loop approvals.",
+      "problem_solved": "PLACEHOLDER: Expand with the specific enterprise problem you targeted.",
+      "technologies": ["Python", "PLACEHOLDER: add remaining verified stack"],
+      "contribution": "PLACEHOLDER: Your actual contribution.",
+      "status": "PLACEHOLDER: completed | in-progress",
+      "outcomes": [],
+      "repository_url": "https://github.com/meniklc/nexusops-ai",
+      "demo_url": null,
+      "tags": ["ai-ml", "rag", "enterprise", "agents"]
+    }
+  ]
+}

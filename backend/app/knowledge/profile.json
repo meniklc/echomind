@@ -1,0 +1,67 @@
+{
+  "name": "K L C Medha Nipuna",
+  "headline": "PLACEHOLDER: Add your professional headline (e.g. Aspiring ML Engineer | Full-Stack Developer)",
+  "summary": "PLACEHOLDER: Replace this with a verified 2–4 sentence professional summary. EchoMind will introduce itself as an AI representation of you using this text.",
+  "interests": [
+    "Artificial Intelligence",
+    "Machine Learning",
+    "Software Engineering"
+  ],
+  "education": [
+    {
+      "institution": "PLACEHOLDER: University / College name",
+      "degree": "PLACEHOLDER: Degree programme (e.g. B.Tech Computer Science)",
+      "field": "PLACEHOLDER: Specialization if any",
+      "start_year": null,
+      "end_year": null,
+      "status": "PLACEHOLDER: ongoing | completed",
+      "highlights": []
+    }
+  ],
+  "skills": {
+    "languages": ["PLACEHOLDER: e.g. Python", "PLACEHOLDER: e.g. JavaScript"],
+    "frameworks": ["PLACEHOLDER: e.g. FastAPI", "PLACEHOLDER: e.g. React"],
+    "ai_ml": ["PLACEHOLDER: e.g. scikit-learn", "PLACEHOLDER: e.g. PyTorch"],
+    "tools": ["PLACEHOLDER: e.g. Git", "PLACEHOLDER: e.g. Docker"],
+    "other": []
+  },
+  "experience": [
+    {
+      "title": "PLACEHOLDER: Role title",
+      "organization": "PLACEHOLDER: Company / Org",
+      "location": "PLACEHOLDER: Location or Remote",
+      "start_date": "PLACEHOLDER: YYYY-MM",
+      "end_date": "PLACEHOLDER: YYYY-MM or Present",
+      "type": "PLACEHOLDER: internship | full-time | freelance | research",
+      "highlights": [
+        "PLACEHOLDER: Verified responsibility or outcome — do not invent metrics"
+      ]
+    }
+  ],
+  "achievements": [
+    {
+      "title": "PLACEHOLDER: Achievement or certification title",
+      "issuer": "PLACEHOLDER: Issuing organization",
+      "date": "PLACEHOLDER: YYYY-MM",
+      "url": null,
+      "notes": "PLACEHOLDER: Optional verified detail"
+    }
+  ],
+  "career_goals": "PLACEHOLDER: Describe target roles (e.g. ML Engineer, AI Engineer) and what you want to work on. Keep this accurate — EchoMind will use it for suitability answers.",
+  "links": {
+    "github": "https://github.com/meniklc",
+    "resume": "PLACEHOLDER: https://... link to your PDF resume",
+    "linkedin": "PLACEHOLDER: https://linkedin.com/in/...",
+    "email": "PLACEHOLDER: your.email@example.com",
+    "portfolio": null
+  },
+  "suggested_questions": [
+    "Tell me about yourself.",
+    "Explain your strongest AI/ML project.",
+    "What technologies do you work with?",
+    "What experience do you have?",
+    "What are your career goals?",
+    "Why would you be suitable for this role?"
+  ],
+  "disclaimer": "I am EchoMind, an AI digital twin representing K L C Medha Nipuna's professional profile. I am not the human candidate."
+}

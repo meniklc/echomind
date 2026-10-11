@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+:root {
+  --bg-deep: #070b14;
+  --bg-panel: #0d1424;
+  --bg-elevated: #121b2e;
+  --line: rgba(148, 163, 184, 0.18);
+  --text: #e8eef8;
+  --muted: #94a3b8;
+  --accent: #2dd4bf;
+  --accent-2: #38bdf8;
+  --danger: #fb7185;
+  --ok: #34d399;
+  --font-display: "Sora", sans-serif;
+  --font-body: "Instrument Sans", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--text);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(45, 212, 191, 0.12), transparent 55%),
+    radial-gradient(900px 500px at 90% 0%, rgba(56, 189, 248, 0.1), transparent 50%),
+    linear-gradient(180deg, #070b14 0%, #0a101c 45%, #070b14 100%);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(45, 212, 191, 0.35);
+}
+
+a {
+  color: var(--accent-2);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  color: var(--accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.surface {
+  background: color-mix(in srgb, var(--bg-panel) 88%, transparent);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+}
+
+.waveform {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 28px;
+}
+
+.waveform span {
+  width: 3px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  animation: wave 1s ease-in-out infinite;
+  transform-origin: bottom;
+}
+
+.waveform span:nth-child(2) { animation-delay: 0.1s; }
+.waveform span:nth-child(3) { animation-delay: 0.2s; }
+.waveform span:nth-child(4) { animation-delay: 0.3s; }
+.waveform span:nth-child(5) { animation-delay: 0.15s; }
+.waveform span:nth-child(6) { animation-delay: 0.25s; }
+.waveform span:nth-child(7) { animation-delay: 0.05s; }
+
+@keyframes wave {
+  0%, 100% { height: 6px; opacity: 0.55; }
+  50% { height: 26px; opacity: 1; }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.rise {
+  animation: rise 0.7s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .waveform span,
+  .rise {
+    animation: none !important;
+  }
+  .waveform span {
+    height: 12px;
+  }
+}
