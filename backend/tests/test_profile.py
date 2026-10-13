@@ -5,7 +5,7 @@ def test_profile_returns_public_fields(client: TestClient) -> None:
     response = client.get("/api/profile")
     assert response.status_code == 200
     data = response.json()
-    assert data["name"] == "K L C Medha Nipuna"
+    assert "Medha Nipuna" in data["name"]
     assert "skills" in data
     assert "projects" in data
     assert isinstance(data["projects"], list)

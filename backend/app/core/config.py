@@ -39,8 +39,11 @@ class Settings(BaseSettings):
     tts_timeout_seconds: float = Field(default=45.0, alias="TTS_TIMEOUT_SECONDS")
 
     chat_max_question_chars: int = 1000
-    chat_max_history_turns: int = 8
-    chat_max_history_message_chars: int = 800
+    chat_max_history_turns: int = 12
+    chat_max_history_message_chars: int = 4000
+
+    supabase_url: str = Field(default="", alias="SUPABASE_URL")
+    supabase_key: str = Field(default="", alias="SUPABASE_KEY")
 
     @property
     def cors_origin_list(self) -> List[str]:

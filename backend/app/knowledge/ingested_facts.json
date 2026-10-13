@@ -1,0 +1,92 @@
+[
+  {
+    "id": "test-review-item-1",
+    "entity_type": "skill",
+    "title": "Advanced PyTorch",
+    "content": "Proficient in PyTorch and tensor operations.",
+    "source": "manual",
+    "source_url_or_file": "notes.txt",
+    "import_date": "2026-10-13T00:00:00Z",
+    "verification_status": "rejected",
+    "metadata": {},
+    "conflicts": []
+  },
+  {
+    "id": "li-exp-0-1791901372",
+    "entity_type": "experience",
+    "title": "",
+    "content": "HID Global, Bengaluru, IndiaSep 2026\u2013Present\nSoftware Development Engineer (SDE) Apprentice\n\u2022Training in enterprise software architecture and secure coding standards.\n\u2022Learning cloud integration, Git/GitHub workflows, and Agile methodologies.\n\u2022Participating in standups, design walkthroughs, and code reviews to understand scalable codebase maintenance.\nApti Business Solutions, Bengaluru, IndiaJun 2026\u2013Jul 2026\nAI/ML Developer Intern\n\u2022Worked on AI Learn, an educational platform for personalized learning.\n\u2022Developed AI Tutor functionality using PostgreSQL and Supabase.\n\u2022Integrated AI-driven features to improve student learning experiences.\n\u2022Collaborated on ML model development and deployment for education.\nSkillDisk, Bengaluru, India 2024\nAI Engineer Intern\n\u2022Prepared datasets, performed preprocessing, and extracted features for URL classification.\n\u2022Evaluated ML models and selected RandomForestClassifier based on comparative accuracy.\n\u2022Implemented backend logic and integrated model predictions into the application workflow.\n\u2022Contributed to AI-powered phishing URL detection and security analysis.\nProjects\nNexusOps AI \u2013 Agentic Enterprise Operations Platform\n\u2022 Designing a Python and FastAPI agent system to automate corporate workflows from intake to resolution, with\nhuman-in-the-loop approval.\n\u2022 Implemented secure RAG using PostgreSQL and pgvector, with access-level and department metadata to filter unautho-\nrized documents before LLM processing.\n\u2022 Designing tool calling for Knowledge Search, Ticket Retrieval, and Policy Verification, with RBAC and/chat and\n/approveendpoints for controlled access and data isolation.\nEchoMind \u2013 Personal AI Agent and Workflow Twin\n\u2022 Developing a personalized agent with Python and LangGraph to automate tasks and schedules using semantic user\npreferences.\n\u2022 Building semantic memory with ChromaDB/FAISS to ingest, chunk, and index notes, emails, and documents for\ncontextual retrieval.\n\u2022 Developing multi-agent orchestration with calendar, task manager, and messaging APIs, plus a Streamlit interface for\nexecution logs, tool-call inspection, and user approvals.\nSecuraLM \u2013 AI Cybersecurity Threat Intelligence Platform\n\u2022Built an NLP-based cybersecurity assistant for real-time queries and contextual responses using RAG.\n\u2022Integrated NVD/CVE pipelines for automated cybersecurity threat intelligence collection.\n\u2022Developed suspicious activity log analysis using Streamlit and SQLite.",
+    "source": "linkedin_export",
+    "source_url_or_file": "KothlapuramLCMedhaNipuna_U25UV24T029128_CSE_Resume.pdf",
+    "import_date": "2026-10-13T14:22:52.271576+00:00",
+    "verification_status": "verified",
+    "metadata": {
+      "title": "",
+      "organization": "",
+      "description": "HID Global, Bengaluru, IndiaSep 2026\u2013Present\nSoftware Development Engineer (SDE) Apprentice\n\u2022Training in enterprise software architecture and secure coding standards.\n\u2022Learning cloud integration, Git/GitHub workflows, and Agile methodologies.\n\u2022Participating in standups, design walkthroughs, and code reviews to understand scalable codebase maintenance.\nApti Business Solutions, Bengaluru, IndiaJun 2026\u2013Jul 2026\nAI/ML Developer Intern\n\u2022Worked on AI Learn, an educational platform for personalized learning.\n\u2022Developed AI Tutor functionality using PostgreSQL and Supabase.\n\u2022Integrated AI-driven features to improve student learning experiences.\n\u2022Collaborated on ML model development and deployment for education.\nSkillDisk, Bengaluru, India 2024\nAI Engineer Intern\n\u2022Prepared datasets, performed preprocessing, and extracted features for URL classification.\n\u2022Evaluated ML models and selected RandomForestClassifier based on comparative accuracy.\n\u2022Implemented backend logic and integrated model predictions into the application workflow.\n\u2022Contributed to AI-powered phishing URL detection and security analysis.\nProjects\nNexusOps AI \u2013 Agentic Enterprise Operations Platform\n\u2022 Designing a Python and FastAPI agent system to automate corporate workflows from intake to resolution, with\nhuman-in-the-loop approval.\n\u2022 Implemented secure RAG using PostgreSQL and pgvector, with access-level and department metadata to filter unautho-\nrized documents before LLM processing.\n\u2022 Designing tool calling for Knowledge Search, Ticket Retrieval, and Policy Verification, with RBAC and/chat and\n/approveendpoints for controlled access and data isolation.\nEchoMind \u2013 Personal AI Agent and Workflow Twin\n\u2022 Developing a personalized agent with Python and LangGraph to automate tasks and schedules using semantic user\npreferences.\n\u2022 Building semantic memory with ChromaDB/FAISS to ingest, chunk, and index notes, emails, and documents for\ncontextual retrieval.\n\u2022 Developing multi-agent orchestration with calendar, task manager, and messaging APIs, plus a Streamlit interface for\nexecution logs, tool-call inspection, and user approvals.\nSecuraLM \u2013 AI Cybersecurity Threat Intelligence Platform\n\u2022Built an NLP-based cybersecurity assistant for real-time queries and contextual responses using RAG.\n\u2022Integrated NVD/CVE pipelines for automated cybersecurity threat intelligence collection.\n\u2022Developed suspicious activity log analysis using Streamlit and SQLite."
+    },
+    "conflicts": []
+  },
+  {
+    "id": "li-edu-1791901372",
+    "entity_type": "education",
+    "title": "LinkedIn Education Details",
+    "content": "University of Visvesvaraya College of Engineering, Bengaluru2024\u20132027\nB.Tech in Computer Science Engineering (Final Year) CGPA: 9.12/10 (up to 6th semester)\nGovernment Polytechnic for Women, Bengaluru2021\u20132024\nDiploma in Computer Science Engineering 91.60%\nCluny Convent High School, Jalahalli, Bengaluru2021\n10th Standard 95.52%",
+    "source": "linkedin_export",
+    "source_url_or_file": "KothlapuramLCMedhaNipuna_U25UV24T029128_CSE_Resume.pdf",
+    "import_date": "2026-10-13T14:22:52.271576+00:00",
+    "verification_status": "verified",
+    "metadata": {},
+    "conflicts": []
+  },
+  {
+    "id": "li-skills-1791901372",
+    "entity_type": "skill",
+    "title": "LinkedIn Skills",
+    "content": "Programming Languages:Python, Java, C++ (Basic), Web and Backend:FastAPI, Django, REST APIs, HTML, CSS, Databases and Vector Search:PostgreSQL, pgvector, SQLite, Supabase, ChromaDB, FAISS, AI and Machine Learning:Generative AI, LLMs, RAG, Multi-Agent Frameworks, LLM Tooling, Core Computer Science:Operating Systems, Multithreading, Computer Networks, OOP, Data Structures and Algorithms,, RBAC, Tools and Frameworks:Git, GitHub, Cursor IDE, Streamlit, LangGraph",
+    "source": "linkedin_export",
+    "source_url_or_file": "KothlapuramLCMedhaNipuna_U25UV24T029128_CSE_Resume.pdf",
+    "import_date": "2026-10-13T14:22:52.271576+00:00",
+    "verification_status": "verified",
+    "metadata": {
+      "skills": [
+        "Programming Languages:Python, Java, C++ (Basic)",
+        "Web and Backend:FastAPI, Django, REST APIs, HTML, CSS",
+        "Databases and Vector Search:PostgreSQL, pgvector, SQLite, Supabase, ChromaDB, FAISS",
+        "AI and Machine Learning:Generative AI, LLMs, RAG, Multi-Agent Frameworks, LLM Tooling",
+        "Core Computer Science:Operating Systems, Multithreading, Computer Networks, OOP, Data Structures and Algorithms,",
+        "RBAC",
+        "Tools and Frameworks:Git, GitHub, Cursor IDE, Streamlit, LangGraph"
+      ]
+    },
+    "conflicts": []
+  },
+  {
+    "id": "li-exp-0-1791901458",
+    "entity_type": "experience",
+    "title": "",
+    "content": "HID\nIntern\nSeptember 2026\u00a0-\u00a0Present\u00a0(2 months)\nBangalore\nAPTI BUSINESS SOLUTIONS\nAIML Developer Intern\nJune 2026\u00a0-\u00a0July 2026\u00a0(2 months)\nBangalore Urban, Karnataka, India\nContributed to the development of an AI-powered educational platform by\nbuilding intelligent document processing and AI Tutor features. Worked\non RAG-based document question answering, OCR pipelines, vector\nembeddings, telemetry analytics, student engagement tracking, and LLM\nintegration.\nskilldisk\nAI Engineer\nJanuary 2024\u00a0-\u00a0April 2024\u00a0(4 months)\nWorked on a project detecting phishing sites using AI",
+    "source": "linkedin_export",
+    "source_url_or_file": "Profile.pdf",
+    "import_date": "2026-10-13T14:24:18.924851+00:00",
+    "verification_status": "verified",
+    "metadata": {
+      "title": "",
+      "organization": "",
+      "description": "HID\nIntern\nSeptember 2026\u00a0-\u00a0Present\u00a0(2 months)\nBangalore\nAPTI BUSINESS SOLUTIONS\nAIML Developer Intern\nJune 2026\u00a0-\u00a0July 2026\u00a0(2 months)\nBangalore Urban, Karnataka, India\nContributed to the development of an AI-powered educational platform by\nbuilding intelligent document processing and AI Tutor features. Worked\non RAG-based document question answering, OCR pipelines, vector\nembeddings, telemetry analytics, student engagement tracking, and LLM\nintegration.\nskilldisk\nAI Engineer\nJanuary 2024\u00a0-\u00a0April 2024\u00a0(4 months)\nWorked on a project detecting phishing sites using AI"
+    },
+    "conflicts": []
+  },
+  {
+    "id": "li-edu-1791901458",
+    "entity_type": "education",
+    "title": "LinkedIn Education Details",
+    "content": "NxtWave\n\u00b7\u00a0(September 2024\u00a0-\u00a0September 2027)\nUVCE\nBachelor of Technology - BTech,\u00a0Computer Science and\nEngineering\u00a0\u00b7\u00a0(September 2024\u00a0-\u00a0September 2027)\nGovernment Women's Polytechnic Bangalore\nDiploma in Computer Science and Engineering\u00a0\u00b7\u00a0(October 2021\u00a0-\u00a0May 2024)\nCluny Convent High School Jalahalli Bangalore\nSSLC\u00a0\u00a0\u00b7\u00a0(June 2011\u00a0-\u00a0July 2021)\nPage 1 of 2\nPage 2 of 2",
+    "source": "linkedin_export",
+    "source_url_or_file": "Profile.pdf",
+    "import_date": "2026-10-13T14:24:18.924851+00:00",
+    "verification_status": "verified",
+    "metadata": {},
+    "conflicts": []
+  }
+]

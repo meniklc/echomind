@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -p tsconfig.app.json --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --experimental-strip-types --test src/services/__tests__/conversationHistory.test.ts"
   },
   "dependencies": {
     "react": "^19.0.0",

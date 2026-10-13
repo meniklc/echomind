@@ -19,8 +19,8 @@ async def generate_chat_response(
     settings: Settings,
     llm: BaseLLMProvider,
 ) -> ChatResponse:
-    context = retrieve_context(question)
     history_payload = [{"role": m.role, "content": m.content} for m in history]
+    context = retrieve_context(question, history=history_payload)
 
     try:
         answer = await llm.generate(question, context, history_payload)

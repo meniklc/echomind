@@ -13,10 +13,47 @@ export interface PortfolioReference {
   project_id?: string | null;
 }
 
+export type NavigationTab =
+  | "talk"
+  | "portfolio"
+  | "experience"
+  | "projects"
+  | "history"
+  | "admin";
+
+export interface ConversationTurn {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  timestamp: number;
+  status: "completed" | "error";
+  references?: PortfolioReference[];
+  mode?: "llm" | "fact_retrieval";
+  audioUrl?: string | null;
+}
+
+export interface ConversationSession {
+  id: string;
+  title: string;
+  createdAt: number;
+  updatedAt: number;
+  turns: ConversationTurn[];
+}
+
+export interface ConversationSessionSummary {
+  id: string;
+  title: string;
+  createdAt: number;
+  updatedAt: number;
+  turnCount: number;
+  preview: string;
+}
+
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant";
   content: string;
+  timestamp?: number;
   references?: PortfolioReference[];
   audioUrl?: string | null;
   mode?: "llm" | "fact_retrieval";

@@ -5,12 +5,20 @@ from pydantic import BaseModel, Field, field_validator
 
 class ChatMessage(BaseModel):
     role: Literal["user", "assistant"]
-    content: str = Field(..., min_length=1, max_length=800)
+    content: str = Field(..., min_length=1, max_length=4000)
+
+    @field_validator("content")
+    @classmethod
+    def strip_content(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("Message content cannot be empty")
+        return cleaned
 
 
 class ChatRequest(BaseModel):
     question: str = Field(..., min_length=1, max_length=1000)
-    history: List[ChatMessage] = Field(default_factory=list, max_length=8)
+    history: List[ChatMessage] = Field(default_factory=list, max_length=12)
     speak: bool = False
 
     @field_validator("question")

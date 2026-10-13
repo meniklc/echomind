@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: echomind-backend
+    env: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT --app-dir backend
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: CORS_ORIGINS
+        value: http://localhost:5173,http://127.0.0.1:5173,https://echomind.vercel.app
+      - key: LLM_BASE_URL
+        value: https://api.groq.com/openai/v1
+      - key: LLM_MODEL
+        value: llama-3.3-70b-versatile
+      - key: LLM_API_KEY
+        sync: false
+      - key: TTS_VOICE
+        value: en-US-JennyNeural
+      - key: TTS_RATE
+        value: "+0%"
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false

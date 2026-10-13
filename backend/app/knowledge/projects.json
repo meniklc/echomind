@@ -1,70 +1,183 @@
 {
   "projects": [
     {
+      "id": "securalm",
+      "name": "SecuraLM",
+      "short_summary": "A hackathon team project for a cybersecurity-focused AI copilot intended to help SOC analysts investigate security questions with retrieved threat-intelligence context and reduce unsupported answers compared with a general-purpose LLM.",
+      "problem_solved": "Aims to help security operations analysts connect natural-language security questions with relevant MITRE ATT&CK techniques and CVE vulnerability information, with source-grounded context for analysis.",
+      "technologies": [
+        "Python",
+        "Ollama",
+        "TinyLlama",
+        "ChromaDB",
+        "all-MiniLM-L6-v2 embeddings",
+        "BM25 retrieval",
+        "Cross-encoder reranking",
+        "Retrieval-Augmented Generation (RAG)",
+        "MITRE ATT&CK data",
+        "NVD CVE data"
+      ],
+      "contribution": "Prior project work included ATT&CK data ingestion, a ChromaDB-based retrieval pipeline using all-MiniLM-L6-v2 embeddings, BM25 retrieval and cross-encoder reranking, and NVD ingestion. The NVD ingestion stored 2,000 CVE records; subsequent work focused on retrieving ATT&CK techniques and CVE vulnerabilities together.",
+      "status": "in-progress (hackathon team project; current completion status not confirmed)",
+      "outcomes": [
+        "NVD ingestion stored 2,000 CVE vulnerability records in the project database."
+      ],
+      "repository_url": null,
+      "demo_url": null,
+      "tags": [
+        "cybersecurity",
+        "ai-ml",
+        "llm",
+        "rag",
+        "soc-copilot",
+        "threat-intelligence",
+        "mitre-attack",
+        "cve"
+      ],
+      "notes": "The intended use includes security-question analysis and context such as technique mappings and vulnerability details. Repository URL, final model choice, deployment status, evaluation metrics, and individual versus team-owned features have not been confirmed. Do not present this as a completed or production-deployed system."
+    },
+    {
       "id": "phishcure",
       "name": "PhishCure",
-      "short_summary": "PLACEHOLDER: One-sentence summary of PhishCure (phishing-related project on GitHub as Phishcure).",
-      "problem_solved": "PLACEHOLDER: What phishing / security problem this addresses.",
-      "technologies": ["PLACEHOLDER: e.g. CSS", "PLACEHOLDER: add verified stack"],
-      "contribution": "PLACEHOLDER: Your actual contribution — do not invent scope.",
-      "status": "PLACEHOLDER: completed | in-progress | archived",
+      "short_summary": "A phishing URL classification project that uses trained machine-learning models to classify a submitted URL as phishing or not phishing and return its status and domain information.",
+      "problem_solved": "Helps assess whether a user-entered URL is phishing-related. The work included gathering phishing links from sources such as SMS and email and using a Kaggle dataset.",
+      "technologies": [
+        "Machine Learning",
+        "Python (specific implementation to confirm)",
+        "Kaggle dataset",
+        "Backend development"
+      ],
+      "contribution": "Worked on the backend, prepared/used the dataset, trained machine-learning models for URL classification, and returned classification status and domain data for submitted URLs.",
+      "status": "not_confirmed",
       "outcomes": [],
       "repository_url": "https://github.com/meniklc/Phishcure",
       "demo_url": null,
-      "tags": ["security", "ai-ml", "web"]
+      "tags": [
+        "security",
+        "ai-ml",
+        "phishing-detection",
+        "web"
+      ],
+      "notes": "Exact model names, framework/library versions, evaluation metrics, and deployment status have not been confirmed in the supplied details."
     },
     {
       "id": "covid19-prediction",
       "name": "COVID-19 Prediction System",
-      "short_summary": "PLACEHOLDER: One-sentence summary of the COVID-19 mini project.",
-      "problem_solved": "PLACEHOLDER: Prediction / analysis problem addressed.",
-      "technologies": ["PLACEHOLDER: Jupyter Notebook", "PLACEHOLDER: add verified ML libraries"],
-      "contribution": "PLACEHOLDER: Your actual contribution.",
-      "status": "PLACEHOLDER: completed | in-progress | archived",
+      "short_summary": "A COVID-19-related prediction mini-project. Further functional details have not yet been confirmed.",
+      "problem_solved": "Not yet documented from verified project details.",
+      "technologies": [
+        "Jupyter Notebook",
+        "CSV dataset (repository contents)"
+      ],
+      "contribution": "Not yet documented; confirm the notebook workflow before describing personal contribution.",
+      "status": "not_confirmed",
       "outcomes": [],
       "repository_url": "https://github.com/meniklc/COVID-19_MINI_Project",
       "demo_url": null,
-      "tags": ["ai-ml", "healthcare", "data-science"]
+      "tags": [
+        "ai-ml",
+        "healthcare",
+        "data-science"
+      ],
+      "notes": "Do not claim a particular model, dataset meaning, metric, or prediction performance until verified from the notebook."
     },
     {
       "id": "bbms",
-      "name": "BBMS",
-      "short_summary": "PLACEHOLDER: Blood Bank / BBMS project summary. Related public repo may be HemoCloud — confirm before publishing details.",
-      "problem_solved": "PLACEHOLDER: Problem this system solves.",
-      "technologies": ["PLACEHOLDER: e.g. PHP if HemoCloud-related"],
-      "contribution": "PLACEHOLDER: Your actual contribution.",
-      "status": "PLACEHOLDER: completed | in-progress | archived",
+      "name": "BBMS / HemoCloud",
+      "short_summary": "A blood bank management project is listed in the portfolio, and the linked public repository is named HemoCloud. Their relationship and project details need confirmation.",
+      "problem_solved": "Not yet confirmed for this portfolio entry.",
+      "technologies": [],
+      "contribution": "Not yet confirmed.",
+      "status": "unverified",
       "outcomes": [],
       "repository_url": "https://github.com/meniklc/HemoCloud",
       "demo_url": null,
-      "tags": ["web", "fullstack"],
-      "notes": "Repository URL points to public HemoCloud repo. Confirm BBMS ↔ HemoCloud relationship and update if incorrect."
+      "tags": [
+        "web",
+        "fullstack"
+      ],
+      "notes": "Confirm whether BBMS and HemoCloud refer to the same project before publishing specific details."
     },
     {
       "id": "cognix",
       "name": "CogniX",
-      "short_summary": "PLACEHOLDER: CogniX was named as a portfolio candidate but no matching public GitHub repository was found under meniklc. Add verified details.",
-      "problem_solved": "PLACEHOLDER",
-      "technologies": [],
-      "contribution": "PLACEHOLDER",
-      "status": "unverified",
+      "short_summary": "A hackathon project built at KLE College that trained available machine-learning models using a dataset to recommend or classify career preferences based on subjects students like.",
+      "problem_solved": "Explores matching students' subject preferences with career preferences using a dataset and machine-learning models.",
+      "technologies": [
+        "Machine Learning",
+        "Dataset-based model training"
+      ],
+      "contribution": "Worked on a simple hackathon project involving training available machine-learning models using students' subject preferences and career-preference data.",
+      "status": "completed (hackathon prototype; exact date not provided)",
       "outcomes": [],
       "repository_url": null,
       "demo_url": null,
-      "tags": ["ai-ml"]
+      "tags": [
+        "ai-ml",
+        "education",
+        "career-guidance",
+        "hackathon"
+      ],
+      "notes": "Exact model names, dataset source, evaluation metrics, teammates, and individual contribution details have not been provided."
     },
     {
       "id": "nexusops-ai",
       "name": "NexusOps AI",
-      "short_summary": "A permission-aware enterprise AI assistant featuring RAG, tool calling, role-based access control, policy enforcement, and human-in-the-loop approvals.",
-      "problem_solved": "PLACEHOLDER: Expand with the specific enterprise problem you targeted.",
-      "technologies": ["Python", "PLACEHOLDER: add remaining verified stack"],
-      "contribution": "PLACEHOLDER: Your actual contribution.",
-      "status": "PLACEHOLDER: completed | in-progress",
+      "short_summary": "A permission-aware enterprise AI assistant featuring retrieval-augmented generation (RAG), tool calling, role-based access control (RBAC), policy enforcement, and human-in-the-loop approvals.",
+      "problem_solved": "Designed around safer enterprise AI assistance where access permissions and policy checks matter. Further user-specific problem statement and measured outcomes have not been provided.",
+      "technologies": [
+        "Python",
+        "FastAPI",
+        "React",
+        "TypeScript",
+        "Vite",
+        "Material UI",
+        "RAG",
+        "Tool calling",
+        "RBAC"
+      ],
+      "contribution": "Personal contribution details and completion status should be confirmed before publishing specific ownership claims.",
+      "status": "in-progress",
       "outcomes": [],
       "repository_url": "https://github.com/meniklc/nexusops-ai",
       "demo_url": null,
-      "tags": ["ai-ml", "rag", "enterprise", "agents"]
+      "tags": [
+        "ai-ml",
+        "rag",
+        "enterprise",
+        "agents",
+        "security"
+      ],
+      "notes": "Technologies and features reflect the project's available description; do not claim production usage, metrics, or sole authorship unless confirmed."
+    },
+    {
+      "id": "ai-learn",
+      "name": "AI Learn — AI-powered Learning Management System",
+      "short_summary": "An AI-powered learning platform with document extraction, a document-grounded AI tutor, and telemetry-based learning progress analysis and recommendations.",
+      "problem_solved": "Helps students understand uploaded learning materials and supports analysis of their learning progress and pace.",
+      "technologies": [
+        "FastAPI",
+        "Tesseract OCR",
+        "Vision-Language Models (VLMs)",
+        "Text chunking",
+        "Embeddings",
+        "Vector databases",
+        "RAG"
+      ],
+      "contribution": "During the Apti Business Solutions AI/ML Developer internship, worked on OCR/document extraction for presentations, PDFs, textbooks and scanned PDFs; implemented the document-grounded RAG tutor; and implemented telemetry event logging and recommendations based on captured student actions.",
+      "status": "internship project; overall project status not confirmed",
+      "outcomes": [],
+      "repository_url": null,
+      "demo_url": null,
+      "tags": [
+        "ai-ml",
+        "rag",
+        "ocr",
+        "education",
+        "telemetry",
+        "recommendation-system"
+      ],
+      "notes": "Specific embedding model, vector database product, VLM model names, metrics, and deployment status were not provided."
     }
   ]
 }

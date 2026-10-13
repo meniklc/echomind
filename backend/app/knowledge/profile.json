@@ -1,67 +1,129 @@
 {
-  "name": "K L C Medha Nipuna",
-  "headline": "PLACEHOLDER: Add your professional headline (e.g. Aspiring ML Engineer | Full-Stack Developer)",
-  "summary": "PLACEHOLDER: Replace this with a verified 2–4 sentence professional summary. EchoMind will introduce itself as an AI representation of you using this text.",
+  "name": "Kothlapuram L C Medha Nipuna",
+  "headline": "Final-year B.Tech Computer Science Engineering student | AI/ML Engineering | LLM Applications | RAG | Backend Development",
+  "summary": "Final-year B.Tech CSE student graduating in 2027, focused on AI/ML engineering, LLM applications, RAG, and backend development. Interested in building reliable AI systems for real-world problems.",
   "interests": [
     "Artificial Intelligence",
     "Machine Learning",
-    "Software Engineering"
+    "LLM Applications",
+    "Retrieval-Augmented Generation (RAG)",
+    "Backend Development",
+    "Real-world AI Systems"
   ],
   "education": [
     {
-      "institution": "PLACEHOLDER: University / College name",
-      "degree": "PLACEHOLDER: Degree programme (e.g. B.Tech Computer Science)",
-      "field": "PLACEHOLDER: Specialization if any",
+      "institution": "UVCE Bengaluru",
+      "degree": "B.Tech",
+      "field": "Computer Science Engineering",
+      "start_year": null,
+      "end_year": 2027,
+      "status": "ongoing",
+      "highlights": [
+        "CGPA: 9.12/10 through Semester 6"
+      ]
+    },
+    {
+      "institution": null,
+      "degree": "Diploma",
+      "field": "Computer Science Engineering",
       "start_year": null,
       "end_year": null,
-      "status": "PLACEHOLDER: ongoing | completed",
+      "status": "completed",
       "highlights": []
     }
   ],
   "skills": {
-    "languages": ["PLACEHOLDER: e.g. Python", "PLACEHOLDER: e.g. JavaScript"],
-    "frameworks": ["PLACEHOLDER: e.g. FastAPI", "PLACEHOLDER: e.g. React"],
-    "ai_ml": ["PLACEHOLDER: e.g. scikit-learn", "PLACEHOLDER: e.g. PyTorch"],
-    "tools": ["PLACEHOLDER: e.g. Git", "PLACEHOLDER: e.g. Docker"],
-    "other": []
+    "languages": [
+      "Python",
+      "Java"
+    ],
+    "frameworks": [
+      "FastAPI",
+      "Django",
+      "React"
+    ],
+    "ai_ml": [
+      "Machine Learning",
+      "Large Language Model (LLM) Applications",
+      "Retrieval-Augmented Generation (RAG)",
+      "OCR",
+      "Text Embeddings",
+      "Vector Databases",
+      "Telemetry-Based Student Learning Recommendations",
+      "URL Phishing Classification"
+    ],
+    "tools": [
+      "Tesseract OCR",
+      "Vision-Language Models (VLMs)",
+      "Git",
+      "GitHub"
+    ],
+    "other": [
+      "Document Processing",
+      "Text Chunking",
+      "REST APIs",
+      "Backend Development"
+    ]
   },
   "experience": [
     {
-      "title": "PLACEHOLDER: Role title",
-      "organization": "PLACEHOLDER: Company / Org",
-      "location": "PLACEHOLDER: Location or Remote",
-      "start_date": "PLACEHOLDER: YYYY-MM",
-      "end_date": "PLACEHOLDER: YYYY-MM or Present",
-      "type": "PLACEHOLDER: internship | full-time | freelance | research",
+      "title": "AI/ML Developer Intern",
+      "organization": "Apti Business Solutions",
+      "location": null,
+      "start_date": "2026-06",
+      "end_date": null,
+      "type": "internship",
       "highlights": [
-        "PLACEHOLDER: Verified responsibility or outcome — do not invent metrics"
+        "Worked on AI Learn, an AI-powered learning management system (AILMS).",
+        "Worked on OCR and document extraction from PowerPoint presentations, PDFs, textbooks, and scanned PDFs using Tesseract OCR and vision-language models.",
+        "Implemented the RAG component for an AI tutor that uses student-uploaded documents to provide explanations designed to be easy to understand.",
+        "Implemented telemetry event logging to capture student actions and support analysis of learning progress and pace.",
+        "Worked on recommendations based on captured student telemetry events.",
+        "Technologies and methods used included FastAPI, OCR, VLMs, text chunking, embeddings, and vector databases."
+      ]
+    },
+    {
+      "title": "AI/ML Engineer Intern",
+      "organization": "SkillDisk",
+      "location": null,
+      "start_date": null,
+      "end_date": null,
+      "type": "internship",
+      "highlights": [
+        "Worked on a phishing URL classification project using real-time phishing-link sources such as SMS and email, along with a Kaggle dataset.",
+        "Worked on the backend and trained machine-learning models using the collected dataset to classify a user-submitted URL as phishing or not phishing.",
+        "Returned the classification status and domain information for the submitted URL."
+      ]
+    },
+    {
+      "title": "SDE Apprentice",
+      "organization": "HID Global",
+      "location": null,
+      "start_date": "2026-09",
+      "end_date": "2027-02",
+      "type": "apprenticeship",
+      "highlights": [
+        "Apprenticeship role; specific project assignment and responsibilities have not yet been provided."
       ]
     }
   ],
-  "achievements": [
-    {
-      "title": "PLACEHOLDER: Achievement or certification title",
-      "issuer": "PLACEHOLDER: Issuing organization",
-      "date": "PLACEHOLDER: YYYY-MM",
-      "url": null,
-      "notes": "PLACEHOLDER: Optional verified detail"
-    }
-  ],
-  "career_goals": "PLACEHOLDER: Describe target roles (e.g. ML Engineer, AI Engineer) and what you want to work on. Keep this accurate — EchoMind will use it for suitability answers.",
+  "achievements": [],
+  "career_goals": "Become a Machine Learning Engineer, gain industry experience building AI systems, and eventually explore entrepreneurship or AI research. Areas of particular interest include healthcare, sustainability, and technology projects.",
   "links": {
     "github": "https://github.com/meniklc",
-    "resume": "PLACEHOLDER: https://... link to your PDF resume",
-    "linkedin": "PLACEHOLDER: https://linkedin.com/in/...",
-    "email": "PLACEHOLDER: your.email@example.com",
+    "resume": null,
+    "linkedin": "http://linkedin.com/in/medhanipuna/",
+    "email": null,
     "portfolio": null
   },
   "suggested_questions": [
     "Tell me about yourself.",
     "Explain your strongest AI/ML project.",
-    "What technologies do you work with?",
-    "What experience do you have?",
+    "What technologies have you used?",
+    "Tell me about your AI Learn internship.",
+    "Explain PhishCure.",
     "What are your career goals?",
-    "Why would you be suitable for this role?"
+    "Why would you be suitable for an AI/ML role?"
   ],
   "disclaimer": "I am EchoMind, an AI digital twin representing K L C Medha Nipuna's professional profile. I am not the human candidate."
 }
