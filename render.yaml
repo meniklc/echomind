@@ -26,3 +26,7 @@ services:
         sync: false
       - key: SUPABASE_KEY
         sync: false
+      - key: OWNER_USER_IDS
+        sync: false
+      - key: SUPABASE_JWT_AUDIENCE
+        value: authenticated

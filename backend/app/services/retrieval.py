@@ -359,12 +359,12 @@ def retrieve_context(
                 for c in matched_chunks[:2]
             ]
             for _, c in matched_chunks[:2]:
+                chunk_url = c.get("source_url_or_file")
                 references.append(
                     PortfolioReference(
-                        type="document",
+                        type="link" if chunk_url else "profile",
                         label=c.get("title") or "Verified Document",
-                        section="documents",
-                        url=c.get("source_url_or_file"),
+                        url=chunk_url,
                     )
                 )
 

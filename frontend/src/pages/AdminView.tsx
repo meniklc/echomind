@@ -22,7 +22,11 @@ import {
   syncGitHub,
   uploadFile,
   uploadLinkedIn,
+  ApiError,
+  checkAdminAccess,
 } from "../services/api";
+import { getSupabaseAuthClient } from "../services/auth";
+import type { Session } from "@supabase/supabase-js";
 
 // ============================================================
 // Utility components
@@ -658,10 +662,105 @@ function PendingReviewPanel({ onActed }: { onActed: () => void }) {
 // ============================================================
 
 export function AdminView() {
+  const [authState, setAuthState] = useState<
+    "checking" | "signed_out" | "owner" | "forbidden" | "error" | "unconfigured"
+  >("checking");
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [signingIn, setSigningIn] = useState(false);
+  const authCheckId = useRef(0);
   const [status, setStatus] = useState<IngestionStatus | null>(null);
   const [statusLoading, setStatusLoading] = useState(true);
   const [statusError, setStatusError] = useState<string | null>(null);
   const [refreshCount, setRefreshCount] = useState(0);
+
+  const validateSession = useCallback(async (session: Session | null) => {
+    const checkId = ++authCheckId.current;
+    setAuthError(null);
+    if (!session) {
+      setAuthState("signed_out");
+      return;
+    }
+
+    setAuthState("checking");
+    try {
+      await checkAdminAccess(session.access_token);
+      if (checkId === authCheckId.current) setAuthState("owner");
+    } catch (err: unknown) {
+      if (checkId !== authCheckId.current) return;
+      if (err instanceof ApiError && err.status === 403) {
+        setAuthState("forbidden");
+        setAuthError("This account is authenticated but is not on the owner allowlist.");
+      } else if (err instanceof ApiError && err.status === 401) {
+        setAuthState("signed_out");
+        setAuthError("Your session is invalid or expired. Please sign in again.");
+      } else {
+        setAuthState("error");
+        setAuthError(err instanceof Error ? err.message : "Owner access could not be verified.");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const client = getSupabaseAuthClient();
+    if (!client) {
+      setAuthState("unconfigured");
+      return;
+    }
+
+    let active = true;
+    void client.auth.getSession().then(({ data, error }) => {
+      if (!active) return;
+      if (error) {
+        setAuthState("error");
+        setAuthError("Unable to check the sign-in session.");
+        return;
+      }
+      void validateSession(data.session);
+    });
+
+    const {
+      data: { subscription },
+    } = client.auth.onAuthStateChange((_event, session) => {
+      if (active) void validateSession(session);
+    });
+    return () => {
+      active = false;
+      authCheckId.current += 1;
+      subscription.unsubscribe();
+    };
+  }, [validateSession]);
+
+  const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const client = getSupabaseAuthClient();
+    if (!client) {
+      setAuthState("unconfigured");
+      return;
+    }
+    setSigningIn(true);
+    setAuthError(null);
+    const { data, error } = await client.auth.signInWithPassword({ email, password });
+    setSigningIn(false);
+    if (error) {
+      setAuthError("Sign-in failed. Check the email and password, then try again.");
+      return;
+    }
+    setPassword("");
+    await validateSession(data.session);
+  };
+
+  const handleSignOut = async () => {
+    const client = getSupabaseAuthClient();
+    if (!client) return;
+    const { error } = await client.auth.signOut();
+    if (error) {
+      setAuthError("Could not sign out cleanly. Please retry.");
+      return;
+    }
+    setAuthState("signed_out");
+  };
 
   const loadStatus = useCallback(async () => {
     setStatusLoading(true);
@@ -681,18 +780,93 @@ export function AdminView() {
   }, []);
 
   useEffect(() => {
-    void loadStatus();
-  }, [loadStatus, refreshCount]);
+    if (authState === "owner") void loadStatus();
+  }, [authState, loadStatus, refreshCount]);
 
   const triggerRefresh = () => setRefreshCount((c) => c + 1);
+
+  if (authState !== "owner") {
+    return (
+      <div className="mx-auto max-w-lg w-full px-4 py-12 sm:px-6">
+        <div className="rounded-2xl border border-[var(--line)] bg-[#0c1220] p-6 space-y-4">
+          <h1 className="text-xl font-display font-bold text-white">Owner sign-in</h1>
+          {authState === "checking" ? (
+            <div className="flex justify-center py-4" role="status">
+              <Spinner />
+            </div>
+          ) : authState === "unconfigured" ? (
+            <AlertBox
+              type="error"
+              message="Owner sign-in is not configured. Set the Supabase frontend URL and publishable/anon key."
+            />
+          ) : authState === "forbidden" ? (
+            <>
+              <AlertBox type="error" message={authError || "Owner access is required."} />
+              <button
+                type="button"
+                onClick={() => void handleSignOut()}
+                className="rounded-lg border border-[var(--line)] px-3 py-2 text-sm text-slate-300"
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <>
+              {authError && <AlertBox type="error" message={authError} />}
+              <form onSubmit={(event) => void handleSignIn(event)} className="space-y-3">
+                <label className="block space-y-1 text-xs text-[var(--muted)]">
+                  Email
+                  <input
+                    type="email"
+                    autoComplete="username"
+                    required
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    className="w-full rounded-lg border border-[var(--line)] bg-[#070b14] px-3 py-2 text-sm text-white"
+                  />
+                </label>
+                <label className="block space-y-1 text-xs text-[var(--muted)]">
+                  Password
+                  <input
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    className="w-full rounded-lg border border-[var(--line)] bg-[#070b14] px-3 py-2 text-sm text-white"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  disabled={signingIn}
+                  className="rounded-lg bg-teal-500/15 px-4 py-2 text-sm font-medium text-teal-300 disabled:opacity-50"
+                >
+                  {signingIn ? "Signing in..." : "Sign in"}
+                </button>
+              </form>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-4xl w-full px-4 py-8 sm:px-6 space-y-10">
       {/* Page header */}
       <div>
-        <h1 className="text-xl font-display font-bold text-white tracking-tight">
-          Knowledge Admin
-        </h1>
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-xl font-display font-bold text-white tracking-tight">
+            Knowledge Admin
+          </h1>
+          <button
+            type="button"
+            onClick={() => void handleSignOut()}
+            className="rounded-lg border border-[var(--line)] px-3 py-1.5 text-xs text-slate-400 hover:text-white"
+          >
+            Sign out
+          </button>
+        </div>
         <p className="text-sm text-[var(--muted)] mt-1">
           Import, review, and manage the knowledge index that powers
           EchoMind&apos;s responses. Facts must pass an admin review step before

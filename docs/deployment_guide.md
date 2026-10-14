@@ -58,6 +58,23 @@ CREATE TABLE IF NOT EXISTS public.ingested_facts (
 4. Set them as `SUPABASE_URL` and `SUPABASE_KEY` in your environment.
 *(Note: If left empty, EchoMind automatically falls back to local JSON storage and browser IndexedDB.)*
 
+## 2.1 Owner Authentication for Admin Operations
+
+Admin endpoints require a Supabase Auth access token and an owner user ID allowlisted by the backend. Create/confirm the owner account in Supabase Auth, then set:
+
+- Backend `SUPABASE_URL`: the project URL.
+- Backend `OWNER_USER_IDS`: the owner Auth user UUID (comma-separated for multiple explicitly authorized owners).
+- Backend `SUPABASE_JWT_AUDIENCE`: `authenticated` unless the project uses a different audience.
+- Frontend `VITE_SUPABASE_URL`: the same project URL.
+- Frontend `VITE_SUPABASE_ANON_KEY`: the Supabase publishable/anon key only. Vite variables are included in the browser bundle; never put a service-role key or signing secret here.
+- Backend `SUPABASE_JWT_SECRET`: only needed for legacy HS256 signing projects. Keep it exclusively in backend deployment secrets. Asymmetric signing keys are verified through Supabase's JWKS endpoint.
+
+The backend verifies token signature, issuer, audience, expiration, and subject. It compares the verified subject to `OWNER_USER_IDS`; client-provided identity or UI visibility does not grant access. Every `/api/admin/*` endpoint, including pending-fact reads and approval actions, is protected. Keep Supabase Auth signups restricted to intended users and apply database/storage access policies if those services are later used for private data.
+
+For projects using legacy HS256 signing, set `SUPABASE_JWT_SECRET` only as a backend secret; it is not needed for asymmetric JWKS signing. Disable public signup in Supabase Auth unless public account creation is explicitly needed. Non-owner accounts remain blocked by the backend allowlist.
+
+Authentication does not change the current persistence design: facts and approvals remain in the local JSON ledger, and the conversation history remains browser-local. Do not treat this phase as a storage migration.
+
 ---
 
 ## 3. Backend Deployment on Render

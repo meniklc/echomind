@@ -44,14 +44,36 @@ class Settings(BaseSettings):
 
     supabase_url: str = Field(default="", alias="SUPABASE_URL")
     supabase_key: str = Field(default="", alias="SUPABASE_KEY")
+    supabase_service_role_key: str = Field(default="", alias="SUPABASE_SERVICE_ROLE_KEY")
+    supabase_jwt_audience: str = Field(
+        default="authenticated",
+        alias="SUPABASE_JWT_AUDIENCE",
+    )
+    supabase_jwt_secret: str = Field(default="", alias="SUPABASE_JWT_SECRET")
+    owner_user_ids: str = Field(default="", alias="OWNER_USER_IDS")
 
     @property
     def cors_origin_list(self) -> List[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
 
     @property
+    def owner_user_id_list(self) -> List[str]:
+        return [user_id.strip() for user_id in self.owner_user_ids.split(",") if user_id.strip()]
+
+    @property
+    def primary_owner_id(self) -> str:
+        """First owner ID; used to scope service-role DB queries."""
+        ids = self.owner_user_id_list
+        return ids[0] if ids else ""
+
+    @property
     def llm_configured(self) -> bool:
         return bool(self.llm_api_key.strip())
+
+    @property
+    def supabase_configured(self) -> bool:
+        """True when both URL and service-role key are present."""
+        return bool(self.supabase_url.strip() and self.supabase_service_role_key.strip())
 
 
 @lru_cache

@@ -54,6 +54,8 @@ def settings() -> Settings:
         LLM_MODEL="test-model",
         TTS_VOICE="en-US-JennyNeural",
         TTS_MAX_CHARS=1200,
+        SUPABASE_URL="https://example.supabase.co",
+        OWNER_USER_IDS="owner-user-id",
     )
 
 

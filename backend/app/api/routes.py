@@ -8,6 +8,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, File, HTTPException, Request, Response, UploadFile
 from fastapi.responses import JSONResponse
 
+from app.core.auth import require_owner
 from app.core.config import Settings, get_settings
 from app.schemas.chat import ChatRequest, ChatResponse
 from app.schemas.health import HealthResponse
@@ -37,6 +38,10 @@ from app.services.tts import TTSError, get_available_voices, get_tts_provider
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+admin_router = APIRouter(
+    prefix="/api/admin",
+    dependencies=[Depends(require_owner)],
+)
 
 
 def _settings(request: Request) -> Settings:
@@ -113,7 +118,13 @@ async def list_tts_voices() -> JSONResponse:
 # Admin Knowledge Ingestion & Sync Endpoints
 # =========================================================================
 
-@router.post("/api/admin/ingest/github", response_model=IngestionResult)
+@admin_router.get("/auth/me")
+async def admin_identity() -> JSONResponse:
+    """Confirm that the current authenticated user is authorized as the owner."""
+    return JSONResponse(content={"authenticated": True})
+
+
+@admin_router.post("/ingest/github", response_model=IngestionResult)
 async def ingest_github(
     body: GitHubSyncRequest,
     _settings: Settings = Depends(get_settings),
@@ -129,7 +140,7 @@ async def ingest_github(
     return result
 
 
-@router.post("/api/admin/ingest/file", response_model=IngestionResult)
+@admin_router.post("/ingest/file", response_model=IngestionResult)
 async def ingest_file(
     file: UploadFile = File(...),
     _settings: Settings = Depends(get_settings),
@@ -170,7 +181,7 @@ async def ingest_file(
     return result
 
 
-@router.post("/api/admin/ingest/linkedin", response_model=IngestionResult)
+@admin_router.post("/ingest/linkedin", response_model=IngestionResult)
 async def ingest_linkedin(
     file: UploadFile = File(...),
     _settings: Settings = Depends(get_settings),
@@ -192,20 +203,20 @@ async def ingest_linkedin(
     return result
 
 
-@router.get("/api/admin/ingest/status", response_model=IngestionStatusResponse)
+@admin_router.get("/ingest/status", response_model=IngestionStatusResponse)
 async def ingestion_status() -> IngestionStatusResponse:
     """Get current status of ingested facts, sources, and verification status."""
     return get_ingestion_status()
 
 
-@router.get("/api/admin/ingest/pending", response_model=List[FactItem])
+@admin_router.get("/ingest/pending", response_model=List[FactItem])
 async def list_pending_facts() -> List[FactItem]:
     """List facts requiring administrative review before inclusion."""
     all_facts = load_ingested_facts()
     return [f for f in all_facts if f.verification_status == FactVerificationStatus.PENDING_REVIEW]
 
 
-@router.post("/api/admin/ingest/review")
+@admin_router.post("/ingest/review")
 async def review_pending_fact(
     body: AdminReviewRequest,
 ) -> JSONResponse:
@@ -220,4 +231,3 @@ async def review_pending_fact(
             "verification_status": reviewed.verification_status.value,
         }
     )
-

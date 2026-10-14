@@ -163,7 +163,7 @@ describe("Conversation History Service (IndexedDB & Fallback)", () => {
       timestamp: 2000,
       status: "completed" as const,
       mode: "llm" as const,
-      references: [{ source: "experience", label: "SkillDisk Apprenticeship" }],
+      references: [{ type: "profile" as const, section: "experience", label: "SkillDisk Apprenticeship" }],
     };
 
     const turn3 = {
@@ -195,9 +195,10 @@ describe("Conversation History Service (IndexedDB & Fallback)", () => {
 
     // Retrieve fresh from storage
     const loaded = await getSession(session.id);
-    assert.ok(loaded);
+    assert.ok(loaded != null);
     assert.equal(loaded.turns.length, 3);
     assert.equal(loaded.turns[1].references?.[0]?.label, "SkillDisk Apprenticeship");
+
   });
 
   it("4. listSessions: returns sessions sorted by recency (updatedAt descending)", async () => {

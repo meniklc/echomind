@@ -57,6 +57,14 @@ Copy `backend/.env.example` → `backend/.env`.
 | `LLM_BASE_URL` | OpenAI-compatible base URL (default Groq-compatible) |
 | `LLM_MODEL` | Model name |
 | `TTS_VOICE` | Edge TTS neural voice (default `en-US-JennyNeural`) |
+| `SUPABASE_URL` | Supabase project URL used by backend token verification |
+| `OWNER_USER_IDS` | Comma-separated Supabase Auth user UUIDs authorized for admin APIs |
+| `SUPABASE_JWT_AUDIENCE` | Access-token audience (default `authenticated`) |
+| `SUPABASE_JWT_SECRET` | Backend-only legacy HS256 signing secret, if applicable |
+| `VITE_SUPABASE_URL` | Frontend Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | Frontend publishable/anon key only; never a service-role key |
+
+Admin sign-in uses Supabase Auth email/password. The frontend anon/publishable key is public by design; the backend independently verifies each admin access token and enforces `OWNER_USER_IDS`. See the [deployment guide](./docs/deployment_guide.md#21-owner-authentication-for-admin-operations) for setup.
 
 ### LLM modes
 

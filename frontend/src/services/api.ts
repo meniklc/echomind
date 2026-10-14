@@ -1,4 +1,5 @@
 import type { ChatHistoryItem, ChatResponse, Profile } from "../types";
+import { getSupabaseAuthClient } from "./auth";
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 
@@ -89,12 +90,23 @@ export interface IngestionResult {
   details: FactItem[];
 }
 
+export class ApiError extends Error {
+  constructor(message: string, public readonly status: number) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
 // =========================================================================
 // Admin ingestion API helpers
 // =========================================================================
 
+export async function checkAdminAccess(accessToken?: string): Promise<void> {
+  await adminRequest("/api/admin/auth/me", {}, accessToken);
+}
+
 export async function fetchIngestionStatus(): Promise<IngestionStatus> {
-  const response = await fetch(url("/api/admin/ingest/status"));
+  const response = await adminRequest("/api/admin/ingest/status");
   if (!response.ok) {
     const detail = await safeDetail(response);
     throw new Error(detail || "Failed to fetch ingestion status.");
@@ -103,7 +115,7 @@ export async function fetchIngestionStatus(): Promise<IngestionStatus> {
 }
 
 export async function fetchPendingFacts(): Promise<FactItem[]> {
-  const response = await fetch(url("/api/admin/ingest/pending"));
+  const response = await adminRequest("/api/admin/ingest/pending");
   if (!response.ok) {
     const detail = await safeDetail(response);
     throw new Error(detail || "Failed to fetch pending facts.");
@@ -116,7 +128,7 @@ export async function syncGitHub(
   token?: string,
   includeReadmes = true,
 ): Promise<IngestionResult> {
-  const response = await fetch(url("/api/admin/ingest/github"), {
+  const response = await adminRequest("/api/admin/ingest/github", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -135,7 +147,7 @@ export async function syncGitHub(
 export async function uploadFile(file: File): Promise<IngestionResult> {
   const form = new FormData();
   form.append("file", file);
-  const response = await fetch(url("/api/admin/ingest/file"), {
+  const response = await adminRequest("/api/admin/ingest/file", {
     method: "POST",
     body: form,
   });
@@ -149,7 +161,7 @@ export async function uploadFile(file: File): Promise<IngestionResult> {
 export async function uploadLinkedIn(file: File): Promise<IngestionResult> {
   const form = new FormData();
   form.append("file", file);
-  const response = await fetch(url("/api/admin/ingest/linkedin"), {
+  const response = await adminRequest("/api/admin/ingest/linkedin", {
     method: "POST",
     body: form,
   });
@@ -165,7 +177,7 @@ export async function reviewFact(
   action: "approve" | "reject",
   note?: string,
 ): Promise<{ status: string; fact_id: string; verification_status: string }> {
-  const response = await fetch(url("/api/admin/ingest/review"), {
+  const response = await adminRequest("/api/admin/ingest/review", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ fact_id: factId, action, note: note || null }),
@@ -193,4 +205,32 @@ async function safeDetail(response: Response): Promise<string | null> {
   } catch {
     return null;
   }
+}
+
+async function adminRequest(
+  path: string,
+  init: RequestInit = {},
+  suppliedAccessToken?: string,
+): Promise<Response> {
+  const client = getSupabaseAuthClient();
+  if (!client) {
+    throw new Error("Supabase sign-in is not configured for this frontend.");
+  }
+
+  let accessToken = suppliedAccessToken;
+  if (!accessToken) {
+    const { data, error } = await client.auth.getSession();
+    if (error) throw new Error("Unable to read the current sign-in session.");
+    accessToken = data.session?.access_token;
+  }
+  if (!accessToken) throw new ApiError("Sign in to access owner tools.", 401);
+
+  const headers = new Headers(init.headers);
+  headers.set("Authorization", `Bearer ${accessToken}`);
+  const response = await fetch(url(path), { ...init, headers });
+  if (!response.ok) {
+    const detail = await safeDetail(response);
+    throw new ApiError(detail || "Owner request failed.", response.status);
+  }
+  return response;
 }

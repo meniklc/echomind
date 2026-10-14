@@ -69,7 +69,11 @@ def get_verified_chunks() -> List[Dict[str, Any]]:
     try:
         with facts_file.open(encoding="utf-8") as handle:
             facts = json.load(handle)
-            return [f for f in facts if f.get("verification_status") == "verified"]
+            return [
+                f for f in facts
+                if f.get("verification_status") == "verified"
+                and f.get("visibility") == "public"
+            ]
     except Exception as exc:
         logger.warning("Could not load verified chunks: %s", exc)
         return []
