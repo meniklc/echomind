@@ -23,10 +23,12 @@ services:
       - key: TTS_RATE
         value: "+0%"
       - key: SUPABASE_URL
-        sync: false
+        value: ""
       - key: SUPABASE_KEY
-        sync: false
+        value: ""
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        value: ""
       - key: OWNER_USER_IDS
-        sync: false
+        value: ""
       - key: SUPABASE_JWT_AUDIENCE
         value: authenticated
