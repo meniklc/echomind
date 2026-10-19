@@ -135,7 +135,12 @@ def test_conflict_detection_unsupported_claim() -> None:
     assert any(c.conflict_type == ConflictType.UNSUPPORTED_CLAIM for c in conflicts)
 
 
-def test_store_and_admin_review() -> None:
+def test_store_and_admin_review(monkeypatch, tmp_path) -> None:
+    # Keep the test hermetic: never write to the tracked knowledge ledger.
+    monkeypatch.setattr(
+        "app.services.ingestion.INGESTED_FACTS_FILE", tmp_path / "ingested_facts.json"
+    )
+
     new_fact = FactItem(
         id="test-review-item-1",
         entity_type="skill",
@@ -192,8 +197,15 @@ def test_available_voices_list() -> None:
 
 
 @pytest.mark.asyncio
-async def test_storage_adapter_local_fallback() -> None:
+async def test_storage_adapter_local_fallback(monkeypatch, tmp_path) -> None:
+    # Isolate local persistence to a temp file so the tracked knowledge file is
+    # never mutated by the test suite.
+    sessions_file = tmp_path / "sessions.json"
+    monkeypatch.setattr("app.services.storage.LOCAL_SESSIONS_FILE", sessions_file)
+
     storage = StorageAdapter()
+    storage.supabase_url = ""
+    storage.supabase_key = ""
     session_id = "test-session-storage-123"
 
     turn = await storage.save_turn(
@@ -207,3 +219,4 @@ async def test_storage_adapter_local_fallback() -> None:
     turns = await storage.get_session_turns(session_id)
     assert len(turns) >= 1
     assert turns[0]["content"] == "Hello digital twin!"
+    assert sessions_file.exists()

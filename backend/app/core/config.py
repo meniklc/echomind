@@ -30,8 +30,15 @@ class Settings(BaseSettings):
         alias="LLM_BASE_URL",
     )
     llm_api_key: str = Field(default="", alias="LLM_API_KEY")
-    llm_model: str = Field(default="llama-3.1-8b-instant", alias="LLM_MODEL")
+    # Primary model. Groq retires models over time; llm_fallback_models lets the
+    # client self-heal when the configured model is no longer served.
+    llm_model: str = Field(default="openai/gpt-oss-20b", alias="LLM_MODEL")
+    llm_fallback_models: str = Field(
+        default="openai/gpt-oss-20b",
+        alias="LLM_FALLBACK_MODELS",
+    )
     llm_timeout_seconds: float = Field(default=30.0, alias="LLM_TIMEOUT_SECONDS")
+    llm_max_tokens: int = Field(default=800, alias="LLM_MAX_TOKENS")
 
     tts_voice: str = Field(default="en-US-JennyNeural", alias="TTS_VOICE")
     tts_rate: str = Field(default="+0%", alias="TTS_RATE")
@@ -69,6 +76,16 @@ class Settings(BaseSettings):
     @property
     def llm_configured(self) -> bool:
         return bool(self.llm_api_key.strip())
+
+    @property
+    def llm_model_candidates(self) -> List[str]:
+        """Ordered, de-duplicated list of models to try (primary first)."""
+        candidates: List[str] = []
+        for model in [self.llm_model, *self.llm_fallback_models.split(",")]:
+            cleaned = model.strip()
+            if cleaned and cleaned not in candidates:
+                candidates.append(cleaned)
+        return candidates or ["openai/gpt-oss-20b"]
 
     @property
     def supabase_configured(self) -> bool:

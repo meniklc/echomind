@@ -12,6 +12,11 @@ from app.core.config import Settings
 
 logger = logging.getLogger(__name__)
 
+# Consistent default voice (English, female). Used whenever TTS_VOICE is missing
+# or malformed, so the deployed voice can never silently drift to a system default.
+DEFAULT_TTS_VOICE = "en-US-JennyNeural"
+_VOICE_ID_PATTERN = re.compile(r"^[a-z]{2,3}-[A-Z]{2,3}-[A-Za-z0-9]+Neural$")
+
 # Pronunciation and abbreviation map for natural speech
 PRONUNCIATION_MAP = [
     (re.compile(r"\bAI/ML\b", re.IGNORECASE), "A I, M L"),
@@ -112,7 +117,7 @@ class EdgeTTSProvider(BaseTTSProvider):
         if len(cleaned) > self.settings.tts_max_chars:
             cleaned = cleaned[:self.settings.tts_max_chars]
 
-        selected_voice = (voice or self.settings.tts_voice).strip() or self.settings.tts_voice
+        selected_voice = resolve_voice(voice or self.settings.tts_voice)
         tmp_path: Optional[Path] = None
         try:
             with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as tmp:
@@ -151,6 +156,21 @@ class EdgeTTSProvider(BaseTTSProvider):
 
 def get_tts_provider(settings: Settings) -> BaseTTSProvider:
     return EdgeTTSProvider(settings)
+
+
+def resolve_voice(voice: Optional[str], fallback: str = DEFAULT_TTS_VOICE) -> str:
+    """Return a valid Edge TTS voice id, falling back safely when invalid/empty.
+
+    A well-formed but unknown voice id is preserved so operators can configure
+    any Edge voice; only empty or malformed values are replaced by the default.
+    """
+    candidate = (voice or "").strip()
+    if not candidate:
+        return fallback
+    if _VOICE_ID_PATTERN.match(candidate):
+        return candidate
+    logger.warning("Invalid TTS voice id %r; using default %r", candidate, fallback)
+    return fallback
 
 
 def get_available_voices() -> List[Dict[str, str]]:

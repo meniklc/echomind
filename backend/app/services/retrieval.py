@@ -51,6 +51,16 @@ EXPERIENCE_ALIASES: Dict[str, List[str]] = {
     "hid": ["hid", "hid global", "sde apprentice", "apprenticeship"],
 }
 
+# Phrases that need word-boundary matching so that e.g. "about your projects"
+# is not misread as the self-introduction intent "about you".
+_WORD_BOUNDED_PHRASES = {"about you", "about yourself", "who you are"}
+
+
+def _phrase_present(text: str, phrase: str) -> bool:
+    if phrase in _WORD_BOUNDED_PHRASES:
+        return re.search(rf"\b{re.escape(phrase)}\b", text) is not None
+    return phrase in text
+
 
 def _tokenize(text: str) -> List[str]:
     """Tokenize query while preserving technical keywords."""
@@ -165,28 +175,61 @@ def retrieve_context(
             "footballer", "cricket", "tennis player", "olympian", "marathon",
         )
     )
-    is_intro_query = not has_unrelated_domain and any(k in q for k in ("yourself", "about you", "who are", "introduction", "intro", "summary"))
+    is_intro_query = not has_unrelated_domain and any(
+        _phrase_present(q, k)
+        for k in (
+            "yourself",
+            "about you",
+            "about yourself",
+            "who are you",
+            "who you are",
+            "who is ",
+            "introduce",
+            "introduction",
+            "your background",
+            "your profile",
+            "summary",
+            "what do you do",
+        )
+    )
+    is_identity_query = not has_unrelated_domain and any(
+        k in q
+        for k in (
+            "your name",
+            "your full name",
+            "your identity",
+            "your title",
+            "who am i",
+        )
+    )
     is_skills_query = not has_unrelated_domain and any(k in q for k in ("skill", "technolog", "tech stack", "languages", "frameworks", "tools", "libraries"))
-    is_education_query = not has_unrelated_domain and any(k in q for k in ("educat", "college", "university", "degree", "graduat", "school", "b.tech", "diploma", "cgpa", "gpa", "uvce"))
+    is_education_query = not has_unrelated_domain and any(k in q for k in ("educat", "college", "university", "degree", "graduat", "school", "study", "studying", "studies", "b.tech", "diploma", "cgpa", "gpa", "uvce"))
     is_experience_query = not has_unrelated_domain and any(k in q for k in ("experience", "internship", "intern", "employment", "apti", "skilldisk", "hid"))
-    is_projects_list_query = not has_unrelated_domain and any(k in q for k in ("what projects", "projects have", "portfolio projects", "built any", "all projects", "show me your projects", "list projects"))
+    is_projects_list_query = not has_unrelated_domain and any(
+        k in q
+        for k in (
+            "what projects", "projects have", "projects did", "projects you", "projects i",
+            "your projects", "portfolio projects", "show me your projects", "list projects",
+            "list of projects", "about your projects", "all projects", "built any",
+            "what have you built", "projects built",
+        )
+    )
     is_career_goals_query = not has_unrelated_domain and any(k in q for k in ("career", "goal", "aspir", "future plan", "suitable", "fit for", "why hire", "hire you"))
     is_achievements_query = not has_unrelated_domain and any(k in q for k in ("certif", "achiev", "award", "hackathon"))
     is_links_query = any(k in q for k in ("contact", "email", "resume", "cv", "linkedin", "github", "reach", "connect"))
 
-    # Intent A: Professional Introduction / Summary
-    if is_intro_query:
-        if not target_project_id:
-            sections["summary"] = {
-                "name": profile.get("name"),
-                "headline": profile.get("headline"),
-                "summary": profile.get("summary"),
-                "interests": profile.get("interests"),
-                "disclaimer": profile.get("disclaimer"),
-            }
-            references.append(
-                PortfolioReference(type="profile", label="Professional summary", section="summary")
-            )
+    # Intent A: Professional Introduction / Summary / Identity (name)
+    if (is_intro_query or is_identity_query) and not target_project_id:
+        sections["summary"] = {
+            "name": profile.get("name"),
+            "headline": profile.get("headline"),
+            "summary": profile.get("summary"),
+            "interests": profile.get("interests"),
+            "disclaimer": profile.get("disclaimer"),
+        }
+        references.append(
+            PortfolioReference(type="profile", label="Professional summary", section="summary")
+        )
 
     # Intent B: Technical Skills
     if is_skills_query and not target_project_id:
@@ -401,7 +444,7 @@ def _has_substantive_facts(sections: Dict[str, Any]) -> bool:
     """True when retrieved content contains verified domain facts beyond identity."""
     substantive_keys = {
         "summary", "skills", "projects", "experience", "education",
-        "career_goals", "links", "achievements",
+        "career_goals", "interests", "links", "achievements", "verified_documents",
     }
     return any(k in sections for k in substantive_keys)
 

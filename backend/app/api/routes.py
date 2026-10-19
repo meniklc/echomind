@@ -33,7 +33,13 @@ from app.services.ingestion import (
 )
 from app.services.knowledge import get_public_profile
 from app.services.llm import get_llm_provider
-from app.services.tts import TTSError, get_available_voices, get_tts_provider
+from app.services.tts import (
+    TTSError,
+    get_available_voices,
+    get_tts_provider,
+    resolve_voice,
+    DEFAULT_TTS_VOICE,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -49,13 +55,16 @@ def _settings(request: Request) -> Settings:
 
 
 @router.get("/health", response_model=HealthResponse)
-async def health(settings: Settings = Depends(get_settings)) -> HealthResponse:
+async def health(request: Request) -> HealthResponse:
+    settings = _settings(request)
     return HealthResponse(
         status="ok",
         service=settings.app_name,
         version=settings.app_version,
         llm_mode="llm" if settings.llm_configured else "fact_retrieval",
+        llm_model=settings.llm_model if settings.llm_configured else None,
         tts_provider="edge-tts",
+        tts_voice=resolve_voice(settings.tts_voice),
     )
 
 
@@ -111,7 +120,9 @@ async def tts(
 @router.get("/api/tts/voices")
 async def list_tts_voices() -> JSONResponse:
     """List available and configurable voices for Edge TTS."""
-    return JSONResponse(content={"voices": get_available_voices()})
+    return JSONResponse(
+        content={"voices": get_available_voices(), "default": DEFAULT_TTS_VOICE}
+    )
 
 
 # =========================================================================

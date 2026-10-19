@@ -9,9 +9,19 @@ from typing import Any, Dict, List, Optional
 import httpx
 
 from app.core.config import Settings
+from app.services.knowledge import get_profile, get_projects
 from app.services.retrieval import format_facts_for_prompt
 
 logger = logging.getLogger(__name__)
+
+# Provider error codes that indicate the requested model is unavailable.
+MODEL_UNAVAILABLE_CODES = {
+    "model_not_found",
+    "model_decommissioned",
+    "model_deprecated",
+    "invalid_model",
+    "unsupported_model",
+}
 
 SYSTEM_PROMPT = """You are EchoMind, an AI digital twin representing the professional profile described in the verified facts below.
 Speak in the first person as their digital representative. Be transparent that you are an AI representation when asked, but do NOT repeat a full self-introduction on every message. Answer the user's question directly, concisely, and conversationally.
@@ -56,18 +66,23 @@ class FactRetrievalProvider(BaseLLMProvider):
     ) -> str:
         sections = facts.get("sections") or {}
         identity = sections.get("identity") or {}
-        name = identity.get("name") or "Kothlapuram L C Medha Nipuna"
+        name = identity.get("name") or (get_profile().get("name") or "the portfolio owner")
         q = question.lower()
         parts: List[str] = []
 
         is_intro = any(k in q for k in ("yourself", "who are", "introduce", "intro", "who is", "about you"))
         is_first_turn = not history
+        name_asked = any(
+            k in q for k in ("your name", "full name", "who are you", "who is ", "identify yourself")
+        )
 
         if is_intro or (is_first_turn and "summary" in sections):
             parts.append(
                 f"I'm EchoMind, an AI digital twin representing {name}. "
                 "I answer questions using verified portfolio facts."
             )
+        elif name_asked and "identity" in sections:
+            parts.append(f"My name is {name}.")
 
         if "summary" in sections:
             summary = sections["summary"]
@@ -187,13 +202,60 @@ class FactRetrievalProvider(BaseLLMProvider):
         # Honest answer when no substantive facts were matched
         known_substantive = set(sections.keys()) - {"identity"}
         if not known_substantive:
-            return (
-                f"I don't have verified information in {name}'s portfolio regarding that topic. "
-                "I can answer questions about their education at UVCE, internships (Apti Business Solutions, "
-                "SkillDisk), projects (SecuraLM, PhishCure, AI Learn, NexusOps AI), technical skills, or career goals."
-            )
+            available = _describe_available_topics()
+            if available:
+                return (
+                    f"I don't have verified information about that in {name}'s portfolio. "
+                    f"I can answer questions about {available}."
+                )
+            return f"I don't have verified information about that in {name}'s portfolio yet."
 
         return " ".join(parts)
+
+
+def _describe_available_topics() -> str:
+    """Build a data-driven list of topics the portfolio can actually answer.
+
+    Derived from the knowledge base so it never drifts from ``profile.json`` /
+    ``projects.json`` (and never invents facts).
+    """
+    try:
+        profile = get_profile()
+    except Exception:  # noqa: BLE001 - never let messaging break the answer
+        return ""
+
+    topics: List[str] = []
+
+    education = profile.get("education") or []
+    institutions = [e.get("institution") for e in education if e.get("institution")]
+    if institutions:
+        topics.append(f"education ({institutions[0]})")
+
+    experience = profile.get("experience") or []
+    orgs = [e.get("organization") for e in experience if e.get("organization")]
+    if orgs:
+        topics.append("internships and experience (" + ", ".join(orgs) + ")")
+
+    try:
+        project_names = [p.get("name") for p in get_projects() if p.get("name")]
+    except Exception:  # noqa: BLE001
+        project_names = []
+    if project_names:
+        topics.append("projects (" + ", ".join(project_names[:6]) + ")")
+
+    if profile.get("skills"):
+        topics.append("technical skills")
+    if str(profile.get("career_goals") or "").strip():
+        topics.append("career goals")
+    links = profile.get("links") or {}
+    if any(v and not str(v).startswith("PLACEHOLDER") for v in links.values()):
+        topics.append("contact links")
+
+    if not topics:
+        return ""
+    if len(topics) == 1:
+        return topics[0]
+    return ", ".join(topics[:-1]) + ", or " + topics[-1]
 
 
 class OpenAICompatibleProvider(BaseLLMProvider):
@@ -202,12 +264,12 @@ class OpenAICompatibleProvider(BaseLLMProvider):
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
 
-    async def generate(
+    def _build_messages(
         self,
         question: str,
         facts: Dict[str, Any],
-        history: Optional[List[Dict[str, str]]] = None,
-    ) -> str:
+        history: Optional[List[Dict[str, str]]],
+    ) -> List[Dict[str, str]]:
         fact_block = format_facts_for_prompt(facts.get("sections") or {})
         messages: List[Dict[str, str]] = [
             {"role": "system", "content": SYSTEM_PROMPT},
@@ -227,49 +289,103 @@ class OpenAICompatibleProvider(BaseLLMProvider):
                 messages.append({"role": role, "content": content[:1500]})
 
         messages.append({"role": "user", "content": question})
+        return messages
 
-        url = self.settings.llm_base_url.rstrip("/") + "/chat/completions"
-        payload = {
-            "model": self.settings.llm_model,
-            "messages": messages,
-            "temperature": 0.3,
-            "max_tokens": 500,
-        }
-        headers = {
-            "Authorization": f"Bearer {self.settings.llm_api_key}",
-            "Content-Type": "application/json",
-        }
-
+    @staticmethod
+    def _error_code(response: httpx.Response) -> str:
         try:
-            async with httpx.AsyncClient(timeout=self.settings.llm_timeout_seconds) as client:
-                response = await client.post(url, json=payload, headers=headers)
-        except httpx.TimeoutException as exc:
-            logger.warning("LLM request timed out")
-            raise LLMError("The language model timed out. Please try again.") from exc
-        except httpx.HTTPError as exc:
-            logger.warning("LLM request failed: %s", exc)
-            raise LLMError("The language model request failed.") from exc
+            body = response.json()
+        except ValueError:
+            return ""
+        error = body.get("error") if isinstance(body, dict) else None
+        if isinstance(error, dict):
+            return str(error.get("code") or error.get("type") or "")
+        return ""
 
-        if response.status_code == 401:
-            logger.warning("LLM provider returned 401 Unauthorized (check LLM_API_KEY).")
-            raise LLMError("Authentication error with language model provider.")
-        if response.status_code == 429:
-            logger.warning("LLM provider returned 429 Rate Limited.")
-            raise LLMError("Language model rate limit exceeded.")
-        if response.status_code >= 400:
-            logger.warning("LLM provider returned HTTP %s", response.status_code)
-            raise LLMError(f"Language model provider returned error {response.status_code}.")
-
+    def _parse_content(self, response: httpx.Response, model: str) -> str:
         try:
             data = response.json()
             content = data["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError, ValueError) as exc:
+            logger.warning("LLM response format invalid (model=%s)", model)
             raise LLMError("Unexpected language model response format.") from exc
 
         text = (content or "").strip()
         if not text:
+            logger.warning("LLM returned empty content (model=%s)", model)
             raise LLMError("The language model returned an empty answer.")
         return text
+
+    async def generate(
+        self,
+        question: str,
+        facts: Dict[str, Any],
+        history: Optional[List[Dict[str, str]]] = None,
+    ) -> str:
+        messages = self._build_messages(question, facts, history)
+
+        url = self.settings.llm_base_url.rstrip("/") + "/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {self.settings.llm_api_key}",
+            "Content-Type": "application/json",
+        }
+        candidates = self.settings.llm_model_candidates
+        last_error: Optional[LLMError] = None
+
+        async with httpx.AsyncClient(timeout=self.settings.llm_timeout_seconds) as client:
+            for index, model in enumerate(candidates):
+                payload = {
+                    "model": model,
+                    "messages": messages,
+                    "temperature": 0.3,
+                    "max_tokens": self.settings.llm_max_tokens,
+                }
+                try:
+                    response = await client.post(url, json=payload, headers=headers)
+                except httpx.TimeoutException as exc:
+                    logger.warning("LLM request timed out (model=%s)", model)
+                    raise LLMError("The language model timed out. Please try again.") from exc
+                except httpx.HTTPError as exc:
+                    # Log the exception class only — never the key or headers.
+                    logger.warning("LLM transport error (model=%s): %s", model, type(exc).__name__)
+                    raise LLMError("The language model request failed.") from exc
+
+                if response.status_code == 200:
+                    text = self._parse_content(response, model)
+                    if index > 0:
+                        logger.warning(
+                            "LLM answered with fallback model=%s after primary model failed", model
+                        )
+                    return text
+
+                code = self._error_code(response)
+
+                if response.status_code in (400, 404) and code in MODEL_UNAVAILABLE_CODES:
+                    logger.warning(
+                        "LLM model unavailable (status=%s code=%s model=%s); trying next candidate",
+                        response.status_code,
+                        code,
+                        model,
+                    )
+                    last_error = LLMError("The configured language model is unavailable.")
+                    continue
+
+                if response.status_code == 401:
+                    logger.warning("LLM provider rejected credentials (401, model=%s)", model)
+                    raise LLMError("Authentication error with language model provider.")
+                if response.status_code == 429:
+                    logger.warning("LLM provider rate limited (429, model=%s)", model)
+                    raise LLMError("Language model rate limit exceeded.")
+
+                logger.warning(
+                    "LLM provider error (status=%s code=%s model=%s)",
+                    response.status_code,
+                    code or "unknown",
+                    model,
+                )
+                raise LLMError(f"Language model provider returned error {response.status_code}.")
+
+        raise last_error or LLMError("No language model configuration is available.")
 
 
 def get_llm_provider(settings: Settings) -> BaseLLMProvider:

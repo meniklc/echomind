@@ -5,6 +5,7 @@ import { useConversation } from "../hooks/useConversation";
 import { useSpeechRecognition } from "../hooks/useSpeechRecognition";
 import { fetchProfile } from "../services/api";
 import type { NavigationTab, Profile } from "../types";
+import { ADMIN_ENABLED } from "../utils/features";
 import { AdminView } from "./AdminView";
 import { ExperienceView } from "./ExperienceView";
 import { HistoryView } from "./HistoryView";
@@ -49,6 +50,13 @@ export function HomePage() {
     };
   }, []);
 
+  // If the admin panel is disabled, never leave the UI on an unreachable tab.
+  useEffect(() => {
+    if (!ADMIN_ENABLED && activeTab === "admin") {
+      setActiveTab("talk");
+    }
+  }, [activeTab]);
+
   const handleToggleMic = () => {
     if (speech.listening) {
       speech.stop();
@@ -88,7 +96,10 @@ export function HomePage() {
         <div className="mx-auto max-w-6xl w-full px-4 pt-4 sm:px-6 md:px-8" role="alert">
           <div className="rounded-xl border border-[var(--danger)]/40 bg-[rgba(251,113,133,0.08)] px-4 py-3 text-xs sm:text-sm text-[var(--danger)] flex items-center justify-between">
             <span>
-              {loadError} Ensure the FastAPI backend is running on <strong>port 8001</strong>, then refresh.
+              {loadError}
+              {import.meta.env.DEV
+                ? " Ensure the FastAPI backend is running on port 8001, then refresh."
+                : " The service may be temporarily unavailable — please try again shortly."}
             </span>
             <button
               type="button"
@@ -163,7 +174,7 @@ export function HomePage() {
           <HistoryView onSelectSessionToResume={handleResumeSession} />
         )}
 
-        {activeTab === "admin" && <AdminView />}
+        {activeTab === "admin" && ADMIN_ENABLED && <AdminView />}
       </main>
 
       {/* Global Footer */}

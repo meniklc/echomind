@@ -11,11 +11,14 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.9
       - key: CORS_ORIGINS
-        value: http://localhost:5173,http://127.0.0.1:5173,https://echomind.vercel.app
+        # Keep in sync with the Render dashboard. Verified production frontend origin:
+        value: http://localhost:5173,http://127.0.0.1:5173,https://echomind-frontend-umber.vercel.app
       - key: LLM_BASE_URL
         value: https://api.groq.com/openai/v1
       - key: LLM_MODEL
-        value: llama-3.3-70b-versatile
+        value: openai/gpt-oss-20b
+      - key: LLM_FALLBACK_MODELS
+        value: openai/gpt-oss-120b
       - key: LLM_API_KEY
         sync: false
       - key: TTS_VOICE

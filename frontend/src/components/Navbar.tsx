@@ -1,4 +1,5 @@
 import type { NavigationTab } from "../types";
+import { ADMIN_ENABLED } from "../utils/features";
 
 interface NavbarProps {
   activeTab: NavigationTab;
@@ -55,7 +56,7 @@ export function Navbar({
 
         {/* Navigation Tabs */}
         <nav className="flex items-center gap-1 overflow-x-auto py-1" aria-label="Main Navigation">
-          {NAV_ITEMS.map((item) => {
+          {NAV_ITEMS.filter((item) => item.id !== "admin" || ADMIN_ENABLED).map((item) => {
             const isActive = activeTab === item.id;
             return (
               <button

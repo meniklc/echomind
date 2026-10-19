@@ -22,19 +22,20 @@ async def generate_chat_response(
     history_payload = [{"role": m.role, "content": m.content} for m in history]
     context = retrieve_context(question, history=history_payload)
 
+    has_facts = bool(context.get("has_substantive_facts"))
+
     try:
         answer = await llm.generate(question, context, history_payload)
         mode = llm.mode  # type: ignore[attr-defined]
-        status = "ok"
-        if not context.get("has_substantive_facts"):
-            status = "insufficient_info"
+        status = "ok" if has_facts else "insufficient_info"
     except LLMError as exc:
-        logger.warning("LLM failed, falling back to fact retrieval: %s", exc)
+        # The provider genuinely failed: keep the grounded answer, but never label
+        # it as a model response. The note makes the fallback explicit to the user.
+        logger.warning("LLM unavailable (%s); falling back to grounded fact retrieval", exc)
         fallback = FactRetrievalProvider()
         answer = await fallback.generate(question, context, history_payload)
         mode = fallback.mode
-        status = "ok"
-        # Append brief note that external model was unavailable
+        status = "ok" if has_facts else "insufficient_info"
         answer = (
             f"{answer} (Note: the configured language model was unavailable, "
             "so this reply used grounded fact retrieval.)"

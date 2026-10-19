@@ -20,6 +20,36 @@ function uid(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
+// Preferred browser voices (female, English) used only when neural TTS is
+// unavailable. Without this, the OS default voice is often male, which made the
+// deployed voice differ from the configured Edge TTS voice.
+const PREFERRED_BROWSER_VOICES = [
+  "jenny",
+  "aria",
+  "zira",
+  "michelle",
+  "samantha",
+  "google us english",
+  "female",
+];
+
+function pickPreferredBrowserVoice(): SpeechSynthesisVoice | null {
+  if (typeof window === "undefined" || !window.speechSynthesis) return null;
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices || voices.length === 0) return null;
+
+  const englishVoices = voices.filter((v) =>
+    (v.lang || "").toLowerCase().startsWith("en"),
+  );
+  const pool = englishVoices.length > 0 ? englishVoices : voices;
+
+  for (const name of PREFERRED_BROWSER_VOICES) {
+    const match = pool.find((v) => v.name.toLowerCase().includes(name));
+    if (match) return match;
+  }
+  return pool[0] ?? null;
+}
+
 function speakWithBrowser(text: string): Promise<void> {
   return new Promise((resolve, reject) => {
     if (typeof window === "undefined" || !window.speechSynthesis) {
@@ -28,7 +58,9 @@ function speakWithBrowser(text: string): Promise<void> {
     }
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
+    const voice = pickPreferredBrowserVoice();
+    if (voice) utterance.voice = voice;
+    utterance.lang = voice?.lang || "en-US";
     utterance.rate = 1;
     utterance.onend = () => resolve();
     utterance.onerror = () => reject(new Error("Browser speech synthesis failed"));
