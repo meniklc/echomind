@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import pytest
 
+from app.services.knowledge import get_projects, is_publicly_listable
 from app.services.llm import FactRetrievalProvider
 from app.services.retrieval import retrieve_context
 
@@ -90,6 +91,52 @@ def test_project_list_phrasings_return_projects(question: str) -> None:
     sections = _sections(question)
     assert "projects" in sections, question
     assert len(sections["projects"]) >= 2
+
+
+# Projects present in projects.json only as unconfirmed candidates (uncertain
+# status, no verified functional details). They must never appear in a broad
+# "what projects have you built?" answer, but must stay retrievable directly.
+UNCONFIRMED_CANDIDATE_IDS = {"covid19-prediction", "bbms"}
+
+
+@pytest.mark.parametrize(
+    "question",
+    [
+        "Tell me about your projects.",
+        "What projects have you built?",
+        "Show me all your projects.",
+        "List your projects.",
+        "What have you built?",
+    ],
+)
+def test_project_list_excludes_unconfirmed_candidates(question: str) -> None:
+    ids = {p["id"] for p in _sections(question).get("projects", [])}
+    assert ids, question
+    assert ids.isdisjoint(UNCONFIRMED_CANDIDATE_IDS), (question, ids)
+    # Confirmed projects must still be listed.
+    assert {"ai-learn", "securalm", "phishcure"} & ids
+
+
+def test_every_listed_project_is_publicly_listable() -> None:
+    all_projects = get_projects()
+    listed_ids = {p["id"] for p in all_projects if is_publicly_listable(p)}
+    assert listed_ids.isdisjoint(UNCONFIRMED_CANDIDATE_IDS)
+    # The candidates are excluded from listing, not deleted from the facts.
+    assert UNCONFIRMED_CANDIDATE_IDS <= {p["id"] for p in all_projects}
+
+
+@pytest.mark.parametrize(
+    "question, expected_id",
+    [
+        ("What is the COVID-19 prediction project repository?", "covid19-prediction"),
+        ("Tell me about BBMS or HemoCloud.", "bbms"),
+    ],
+)
+def test_direct_questions_still_reach_unconfirmed_candidates(
+    question: str, expected_id: str
+) -> None:
+    ids = [p["id"] for p in _sections(question).get("projects", [])]
+    assert ids == [expected_id], (question, ids)
 
 
 def test_about_your_projects_is_not_treated_as_introduction() -> None:

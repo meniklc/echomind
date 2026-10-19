@@ -60,6 +60,20 @@ def get_projects() -> List[Dict[str, Any]]:
     return base_projects
 
 
+def is_publicly_listable(project: Dict[str, Any]) -> bool:
+    """True unless a project is explicitly opted out of broad public listings.
+
+    ``public_listing`` is presentation metadata, not a fact: entries marked
+    ``false`` (e.g. candidates still awaiting confirmation) remain fully
+    retrievable when asked about directly, but are excluded from overview
+    answers such as "what projects have you built?".
+    """
+    value = project.get("public_listing", True)
+    if isinstance(value, str):
+        return value.strip().lower() not in {"false", "0", "no", "off"}
+    return bool(value)
+
+
 @lru_cache
 def get_verified_chunks() -> List[Dict[str, Any]]:
     """Return approved, verified knowledge chunks from the ingestion ledger."""

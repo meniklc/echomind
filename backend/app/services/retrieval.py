@@ -7,7 +7,12 @@ import re
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 from app.schemas.chat import PortfolioReference
-from app.services.knowledge import get_profile, get_projects, get_verified_chunks
+from app.services.knowledge import (
+    get_profile,
+    get_projects,
+    get_verified_chunks,
+    is_publicly_listable,
+)
 from app.services.semantic import compute_semantic_similarity
 
 STOPWORDS = {
@@ -313,8 +318,9 @@ def retrieve_context(
                 )
 
     elif is_projects_list_query:
-        # Broad overview of portfolio: retrieve all verified projects
-        selected_projects = list(projects)
+        # Broad overview: only projects approved for public listing. Candidates
+        # still awaiting confirmation stay retrievable via direct questions.
+        selected_projects = [p for p in projects if is_publicly_listable(p)]
 
     elif not is_skills_query and not is_education_query and not is_links_query:
         # HYBRID RANKING: Compute BM25 + Semantic Similarity for candidate projects
